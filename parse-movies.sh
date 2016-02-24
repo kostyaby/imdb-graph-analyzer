@@ -1,0 +1,1 @@
+mvn exec:java -Dexec.mainClass="io.github.kostyaby.parser.MovieListParser" -Dexec.args="/Users/kostya_by/Desktop/coursework/movies.list /Users/kostya_by/Desktop/coursework/outputs/movies.txt"
