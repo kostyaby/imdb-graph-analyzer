@@ -31,6 +31,6 @@ public class MovieToRatingParser implements Parser<Rating> {
     }
 
     private int getMovieRank(double doubleMovieRank) {
-        return (int) Math.round(doubleMovieRank);
+        return (int) Math.round(10.0 * doubleMovieRank);
     }
 }
