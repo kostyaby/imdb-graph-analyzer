@@ -19,12 +19,11 @@ public class MovieToActorsParser implements Parser<List<Integer>> {
     public Map<Integer, List<Integer>> parse() {
         Map<Integer, List<Integer>> moviesToActors = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int movieId = jsonObject.getInt("movieid");
-            int actorId = jsonObject.getInt("actorid");
-
-            ParserUtils.putToMultimap(moviesToActors, movieId, actorId);
-        });
+        ParserUtils.parseJsonArray(reader).forEach(
+                jsonObject -> ParserUtils.putToMultimap(
+                        moviesToActors,
+                        jsonObject.getInt("movieid"),
+                        jsonObject.getInt("actorid")));
 
         return moviesToActors;
     }

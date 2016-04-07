@@ -24,12 +24,7 @@ public class DirectorMongoImporter implements MongoImporter {
         database.createCollection(MongoConstants.DIRECTORS_COLLECTION_NAME);
 
         MongoImporterUtils.insertElements(
-                database.getCollection(MongoConstants.DIRECTORS_COLLECTION_NAME), directors, director -> {
-                    Document document = new Document();
-
-                    document.append("name", director.getName());
-
-                    return document;
-                });
+                database.getCollection(MongoConstants.DIRECTORS_COLLECTION_NAME), directors,
+                        director -> new Document("name", director.getName()));
     }
 }

@@ -20,14 +20,17 @@ public class MovieToRatingParser implements Parser<Rating> {
     public Map<Integer, Rating> parse() {
         Map<Integer, Rating> ratings = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int movieId = jsonObject.getInt("movieid");
-            int movieRank = (int) Math.round(10.0 * jsonObject.getDouble("rank"));
-            int movieVotes = jsonObject.getInt("votes");
-
-            ratings.put(movieId, new Rating(movieRank, movieVotes));
-        });
+        ParserUtils.parseJsonArray(reader).forEach(
+                jsonObject -> ratings.put(
+                        jsonObject.getInt("movieid"),
+                        new Rating(
+                                getMovieRank(jsonObject.getDouble("rank")),
+                                jsonObject.getInt("votes"))));
 
         return ratings;
+    }
+
+    private int getMovieRank(double doubleMovieRank) {
+        return (int) Math.round(doubleMovieRank);
     }
 }

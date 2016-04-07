@@ -21,12 +21,11 @@ public class MovieToGenresParser implements Parser<List<Genre>> {
     public Map<Integer, List<Genre>> parse() {
         Map<Integer, List<Genre>> genres = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int movieId = jsonObject.getInt("movieid");
-            String genreName = jsonObject.getString("genre");
-
-            ParserUtils.putToMultimap(genres, movieId, new Genre(genreName));
-        });
+        ParserUtils.parseJsonArray(reader).forEach(
+                jsonObject -> ParserUtils.putToMultimap(
+                        genres,
+                        jsonObject.getInt("movieid"),
+                        new Genre(jsonObject.getString("genre"))));
 
         return genres;
     }

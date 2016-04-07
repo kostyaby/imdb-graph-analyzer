@@ -21,12 +21,11 @@ public class MovieToLanguagesParser implements Parser<List<Language>> {
     public Map<Integer, List<Language>> parse() {
         Map<Integer, List<Language>> languages = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int movieId = jsonObject.getInt("movieid");
-            String languageName = jsonObject.getString("language");
-
-            ParserUtils.putToMultimap(languages, movieId, new Language(languageName));
-        });
+        ParserUtils.parseJsonArray(reader).forEach(
+                jsonObject -> ParserUtils.putToMultimap(
+                        languages,
+                        jsonObject.getInt("movieid"),
+                        new Language(jsonObject.getString("language"))));
 
         return languages;
     }

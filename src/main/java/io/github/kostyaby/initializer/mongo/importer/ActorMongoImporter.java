@@ -24,13 +24,9 @@ public class ActorMongoImporter implements MongoImporter {
         database.createCollection(MongoConstants.ACTORS_COLLECTION_NAME);
 
         MongoImporterUtils.insertElements(
-                database.getCollection(MongoConstants.ACTORS_COLLECTION_NAME), actors, actor -> {
-                    Document document = new Document();
-
-                    document.append("name", actor.getName());
-                    document.append("gender", actor.getGender());
-
-                    return document;
-                });
+                database.getCollection(MongoConstants.ACTORS_COLLECTION_NAME), actors,
+                        actor -> new Document()
+                                .append("name", actor.getName())
+                                .append("gender", actor.getGender()));
     }
 }

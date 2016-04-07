@@ -19,12 +19,11 @@ public class MovieToCountriesParser implements Parser<List<Country>> {
     public Map<Integer, List<Country>> parse() {
         Map<Integer, List<Country>> countries = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int movieId = jsonObject.getInt("movieid");
-            String countryName = jsonObject.getString("country");
-
-            ParserUtils.putToMultimap(countries, movieId, new Country(countryName));
-        });
+        ParserUtils.parseJsonArray(reader).forEach(
+                jsonObject -> ParserUtils.putToMultimap(
+                    countries,
+                    jsonObject.getInt("movieid"),
+                    new Country(jsonObject.getString("country"))));
 
         return countries;
     }

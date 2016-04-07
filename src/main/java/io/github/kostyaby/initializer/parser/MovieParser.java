@@ -20,13 +20,12 @@ public class MovieParser implements Parser<Movie> {
     public Map<Integer, Movie> parse() {
         Map<Integer, Movie> movies = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int movieId = jsonObject.getInt("movieid");
-            String movieTitle = jsonObject.getString("title");
-            int movieYear = jsonObject.getInt("year");
-
-            movies.put(movieId, new Movie(movieTitle, movieYear));
-        });
+        ParserUtils.parseJsonArray(reader).forEach(jsonObject ->
+            movies.put(
+                    jsonObject.getInt("movieid"),
+                    new Movie(
+                            jsonObject.getString("title"),
+                            jsonObject.getInt("year"))));
 
         return movies;
     }

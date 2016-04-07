@@ -24,13 +24,9 @@ public class MovieMongoImporter implements MongoImporter {
         database.createCollection(MongoConstants.MOVIES_COLLECTION_NAME);
 
         MongoImporterUtils.insertElements(
-                database.getCollection(MongoConstants.MOVIES_COLLECTION_NAME), movies, movie -> {
-                    Document document = new Document();
-
-                    document.append("title", movie.getTitle());
-                    document.append("year", movie.getYear());
-
-                    return document;
-                });
+                database.getCollection(MongoConstants.MOVIES_COLLECTION_NAME), movies,
+                        movie -> new Document()
+                                .append("title", movie.getTitle())
+                                .append("year", movie.getYear()));
     }
 }

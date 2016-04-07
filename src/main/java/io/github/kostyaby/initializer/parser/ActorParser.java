@@ -23,13 +23,12 @@ public class ActorParser implements Parser<Actor> {
     public Map<Integer, Actor> parse() {
         Map<Integer, Actor> actors = new HashMap<>();
 
-        ParserUtils.parseJsonArray(reader).forEach(jsonObject -> {
-            int actorId = jsonObject.getInt("actorid");
-            String actorName = jsonObject.getString("name");
-            String actorGender = GENDER_MAPPER.apply(jsonObject.getString("sex"));
-
-            actors.put(actorId, new Actor(actorName, actorGender));
-        });
+        ParserUtils.parseJsonArray(reader).forEach(
+                jsonObject -> actors.put(
+                        jsonObject.getInt("actorid"),
+                        new Actor(
+                                jsonObject.getString("name"),
+                                GENDER_MAPPER.apply(jsonObject.getString("sex")))));
 
         return actors;
     }
