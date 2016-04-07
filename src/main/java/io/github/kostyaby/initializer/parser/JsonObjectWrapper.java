@@ -1,4 +1,4 @@
-package io.github.kostyaby.parser;
+package io.github.kostyaby.initializer.parser;
 
 import org.json.simple.JSONObject;
 

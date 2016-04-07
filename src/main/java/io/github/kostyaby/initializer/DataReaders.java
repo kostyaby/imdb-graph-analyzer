@@ -1,13 +1,12 @@
-package io.github.kostyaby.parser;
+package io.github.kostyaby.initializer;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.IOException;
 
 /**
  * Created by kostya_by on 3/31/16.
  */
-public class InputOutputData {
+public class DataReaders {
     private final BufferedReader actorsReader;
     private final BufferedReader countriesReader;
     private final BufferedReader directorsReader;
@@ -18,9 +17,7 @@ public class InputOutputData {
     private final BufferedReader moviesToDirectorsReader;
     private final BufferedReader ratingsReader;
 
-    private final BufferedWriter logWriter;
-
-    public InputOutputData(
+    public DataReaders(
             BufferedReader actorsReader,
             BufferedReader countriesReader,
             BufferedReader directorsReader,
@@ -29,8 +26,7 @@ public class InputOutputData {
             BufferedReader moviesReader,
             BufferedReader moviesToActorsReader,
             BufferedReader moviesToDirectorsReader,
-            BufferedReader ratingsReader,
-            BufferedWriter logWriter) {
+            BufferedReader ratingsReader) {
         this.actorsReader = actorsReader;
         this.countriesReader = countriesReader;
         this.directorsReader = directorsReader;
@@ -40,7 +36,6 @@ public class InputOutputData {
         this.moviesToActorsReader = moviesToActorsReader;
         this.moviesToDirectorsReader = moviesToDirectorsReader;
         this.ratingsReader = ratingsReader;
-        this.logWriter = logWriter;
     }
 
     public BufferedReader getActorsReader() {
@@ -79,10 +74,6 @@ public class InputOutputData {
         return ratingsReader;
     }
 
-    public BufferedWriter getLogWriter() {
-        return logWriter;
-    }
-
     public void close() throws IOException {
         actorsReader.close();
         countriesReader.close();
@@ -93,6 +84,5 @@ public class InputOutputData {
         moviesToActorsReader.close();
         moviesToDirectorsReader.close();
         ratingsReader.close();
-        logWriter.close();
     }
 }
