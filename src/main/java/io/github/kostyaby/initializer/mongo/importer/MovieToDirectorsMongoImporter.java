@@ -1,5 +1,6 @@
 package io.github.kostyaby.initializer.mongo.importer;
 
+import com.mongodb.DBRef;
 import com.mongodb.client.MongoDatabase;
 import io.github.kostyaby.initializer.mongo.MongoConstants;
 import org.bson.Document;
@@ -39,7 +40,9 @@ public class MovieToDirectorsMongoImporter implements MongoImporter {
                         new Document(
                                 "directors",
                                 movieToDirectorEntry.getValue().stream()
-                                        .map(directorMongoIds::get)
+                                        .map(id -> new DBRef(
+                                                MongoConstants.DIRECTORS_COLLECTION_NAME,
+                                                directorMongoIds.get(id)))
                                         .collect(Collectors.toList())));
     }
 }
