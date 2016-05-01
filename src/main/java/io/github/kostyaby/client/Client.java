@@ -11,6 +11,7 @@ import io.github.kostyaby.engine.SingleThreadedEngine;
 import io.github.kostyaby.engine.models.Model;
 
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 import static com.mongodb.client.model.Filters.eq;
 
@@ -36,9 +37,9 @@ public class Client {
                 database.getCollection("directors").find(eq("name", "Tarantino, Quentin")).first().getObjectId("_id"));
     }
 
-    public static void processRequest(Engine engine, Request request) {
+    public static void processRequest(Engine engine, Request request) throws ExecutionException, InterruptedException {
         System.err.println("Origin: " + request.getOrigin());
-        List<Model> response = engine.processRequest(request);
+        List<Model> response = engine.processRequest(request).get();
 
         for (Model model : response) {
             System.err.println(model.toPrettyString());
@@ -48,7 +49,7 @@ public class Client {
         System.err.println("****************************");
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
         if (args.length != 1) {
             System.out.println(String.format("Invalid number of arguments: expected %d got %d", 1, args.length));
             System.exit(1);

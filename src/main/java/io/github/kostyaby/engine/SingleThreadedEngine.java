@@ -5,6 +5,8 @@ import com.mongodb.client.MongoDatabase;
 import io.github.kostyaby.engine.models.Model;
 
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
@@ -20,7 +22,7 @@ public class SingleThreadedEngine implements Engine {
     }
 
     @Override
-    public List<Model> processRequest(Request request) {
+    public synchronized Future<List<Model>> processRequest(Request request) {
         Objects.requireNonNull(request);
 
         Map<DBRef, Integer> distancesFromOrigin = new HashMap<>();
@@ -58,8 +60,13 @@ public class SingleThreadedEngine implements Engine {
             }
         }
 
-        return distancesFromOrigin.keySet().stream()
+        return CompletableFuture.completedFuture(distancesFromOrigin.keySet().stream()
                 .map(dbRef -> ModelFactory.newModel(dbRef, EngineUtils.fetchDocument(database, dbRef)))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()));
+    }
+
+    @Override
+    public void close() {
+        // do nothing
     }
 }
