@@ -20,12 +20,12 @@ public class DirectorsReferenceRetriever implements ReferenceRetriever {
     }
 
     @Override
-    public List<DBRef> retrieveReferences(DBRef dbRef) {
+    public List<DBRef> retrieveReferences(DBRef dbRef, int maxBranchingFactor) {
         Objects.requireNonNull(dbRef);
 
         List<DBRef> result = EngineUtils.getListOfDBRefs(EngineUtils.fetchDocument(database, dbRef), "directors");
         if (result != null) {
-            return result;
+            return result.subList(0, Math.min(maxBranchingFactor, result.size()));
         } else {
             return new ArrayList<>();
         }

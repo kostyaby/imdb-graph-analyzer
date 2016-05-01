@@ -10,6 +10,8 @@ import io.github.kostyaby.engine.Request;
 import io.github.kostyaby.engine.SingleThreadedEngine;
 import io.github.kostyaby.engine.models.Model;
 
+import java.util.List;
+
 import static com.mongodb.client.model.Filters.eq;
 
 /**
@@ -35,10 +37,14 @@ public class Client {
     }
 
     public static void processRequest(Engine engine, Request request) {
-        for (Model model : engine.processRequest(request)) {
+        System.err.println("Origin: " + request.getOrigin());
+        List<Model> response = engine.processRequest(request);
+
+        for (Model model : response) {
             System.err.println(model.toPrettyString());
         }
 
+        System.err.println("Count: " + response.size());
         System.err.println("****************************");
     }
 

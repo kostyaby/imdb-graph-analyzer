@@ -12,31 +12,36 @@ import java.util.Objects;
 public class Request {
     private final DBRef origin;
     private final List<ReferenceRetriever.Type> referenceRetrieverTypes;
-    private final int distanceFromOriginLimit;
-    private final int responseSizeLimit;
+    private final int maxDistanceFromOrigin;
+    private final int maxResponseSize;
+    private final int maxBranchingFactor;
 
     private Request(
             DBRef origin,
             List<ReferenceRetriever.Type> referenceRetrieverTypes,
-            int distanceFromOriginLimit,
-            int responseSizeLimit) {
+            int maxDistanceFromOrigin,
+            int maxResponseSize,
+            int maxBranchingFactor) {
         Objects.requireNonNull(origin);
         Objects.requireNonNull(referenceRetrieverTypes);
 
         this.origin = origin;
         this.referenceRetrieverTypes = referenceRetrieverTypes;
-        this.distanceFromOriginLimit = distanceFromOriginLimit;
-        this.responseSizeLimit = responseSizeLimit;
+        this.maxDistanceFromOrigin = maxDistanceFromOrigin;
+        this.maxResponseSize = maxResponseSize;
+        this.maxBranchingFactor = maxBranchingFactor;
     }
 
     public static class Builder {
-        private final static int DEFAULT_DISTANCE_FROM_ORIGIN_LIMIT = 5;
-        private final static int DEFAULT_RESPONSE_SIZE_LIMIT = 50;
+        private final static int DEFAULT_MAX_DISTANCE_FROM_ORIGIN = 4;
+        private final static int DEFAULT_MAX_RESPONSE_SIZE = 100;
+        private final static int DEFAULT_MAX_BRANCHING_FACTOR = 4;
 
         private DBRef origin;
         private List<ReferenceRetriever.Type> referenceRetrieverTypes = new ArrayList<>();
-        private int distanceFromOriginLimit = DEFAULT_DISTANCE_FROM_ORIGIN_LIMIT;
-        private int responseSizeLimit = DEFAULT_RESPONSE_SIZE_LIMIT;
+        private int maxDistanceFromOrigin = DEFAULT_MAX_DISTANCE_FROM_ORIGIN;
+        private int maxResponseSize = DEFAULT_MAX_RESPONSE_SIZE;
+        private int maxBranchingFactor = DEFAULT_MAX_BRANCHING_FACTOR;
 
         private Builder() { }
 
@@ -47,14 +52,20 @@ public class Request {
             return this;
         }
 
-        public Builder setDistanceFromOriginLimit(int distanceFromOriginLimit) {
-            this.distanceFromOriginLimit = distanceFromOriginLimit;
+        public Builder setMaxDistanceFromOrigin(int maxDistanceFromOrigin) {
+            this.maxDistanceFromOrigin = maxDistanceFromOrigin;
 
             return this;
         }
 
-        public Builder setResponseSizeLimit(int responseSizeLimit) {
-            this.responseSizeLimit = responseSizeLimit;
+        public Builder setMaxResponseSize(int maxResponseSize) {
+            this.maxResponseSize = maxResponseSize;
+
+            return this;
+        }
+
+        public Builder setMaxBranchingFactor(int maxBranchingFactor) {
+            this.maxBranchingFactor = maxBranchingFactor;
 
             return this;
         }
@@ -67,7 +78,8 @@ public class Request {
         }
 
         public Request build() {
-            return new Request(origin, referenceRetrieverTypes, distanceFromOriginLimit, responseSizeLimit);
+            return new Request(
+                    origin, referenceRetrieverTypes, maxDistanceFromOrigin, maxResponseSize, maxBranchingFactor);
         }
     }
 
@@ -83,11 +95,15 @@ public class Request {
         return referenceRetrieverTypes;
     }
 
-    public int getDistanceFromOriginLimit() {
-        return distanceFromOriginLimit;
+    public int getMaxDistanceFromOrigin() {
+        return maxDistanceFromOrigin;
     }
 
-    public int getResponseSizeLimit() {
-        return responseSizeLimit;
+    public int getMaxResponseSize() {
+        return maxResponseSize;
+    }
+
+    public int getMaxBranchingFactor() {
+        return maxBranchingFactor;
     }
 }

@@ -26,29 +26,34 @@ public class SingleThreadedEngine implements Engine {
         Map<DBRef, Integer> distancesFromOrigin = new HashMap<>();
         Queue<DBRef> queue = new LinkedList<>();
 
-        queue.add(request.getOrigin());
-        distancesFromOrigin.put(request.getOrigin(), 0);
+        DBRef origin = request.getOrigin();
+        List<ReferenceRetriever.Type> referenceRetrieverTypes = request.getReferenceRetrieverTypes();
+        int maxDistanceFromOrigin = request.getMaxDistanceFromOrigin();
+        int maxResponseSize = request.getMaxResponseSize();
+        int maxBranchingFactor = request.getMaxBranchingFactor();
+
+        queue.add(origin);
+        distancesFromOrigin.put(origin, 0);
 
         while (!queue.isEmpty()) {
             DBRef node = queue.poll();
             int distanceFromOrigin = distancesFromOrigin.get(node);
 
-            if (distanceFromOrigin >= request.getDistanceFromOriginLimit()
-                    || distancesFromOrigin.size() >= request.getResponseSizeLimit()) {
-                continue;
+            if (distanceFromOrigin >= maxDistanceFromOrigin || distancesFromOrigin.size() >= maxResponseSize) {
+                break;
             }
 
-            for (ReferenceRetriever.Type referenceRetrieverType : request.getReferenceRetrieverTypes()) {
+            for (ReferenceRetriever.Type referenceRetrieverType : referenceRetrieverTypes) {
                 ReferenceRetriever referenceRetriever = ReferenceRetrieverFactory.newReferenceRetriever(
                         database, referenceRetrieverType);
-                for (DBRef adjacentNode : referenceRetriever.retrieveReferences(node)) {
-                    if (distancesFromOrigin.containsKey(adjacentNode)
-                            || distancesFromOrigin.size() >= request.getResponseSizeLimit()) {
-                        continue;
+                for (DBRef adjacentNode : referenceRetriever.retrieveReferences(node, maxBranchingFactor)) {
+                    if (distancesFromOrigin.size() >= request.getMaxResponseSize()) {
+                        break;
                     }
-
-                    distancesFromOrigin.put(adjacentNode, distanceFromOrigin + 1);
-                    queue.add(adjacentNode);
+                    if (!distancesFromOrigin.containsKey(adjacentNode)) {
+                        distancesFromOrigin.put(adjacentNode, distanceFromOrigin + 1);
+                        queue.add(adjacentNode);
+                    }
                 }
             }
         }
