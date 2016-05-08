@@ -7,20 +7,20 @@ import java.util.List;
 /**
  * Created by kostya_by on 5/8/16.
  */
-public class TraversalState {
+class TraversalState {
     private final DBRef node;
     private final List<Request.QueryStructure> queryStructures;
 
-    public TraversalState(DBRef node, List<Request.QueryStructure> queryStructures) {
+    TraversalState(DBRef node, List<Request.QueryStructure> queryStructures) {
         this.node = node;
         this.queryStructures = queryStructures;
     }
 
-    public DBRef getNode() {
+    DBRef getNode() {
         return node;
     }
 
-    public List<Request.QueryStructure> getQueryStructures() {
+    List<Request.QueryStructure> getQueryStructures() {
         return queryStructures;
     }
 }

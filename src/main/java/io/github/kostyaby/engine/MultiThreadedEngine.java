@@ -14,7 +14,7 @@ import java.util.concurrent.Future;
  * Created by kostya_by on 5/1/16.
  */
 public class MultiThreadedEngine implements Engine {
-    private final int THREAD_COUNTER = 12;
+    private final int THREAD_COUNTER = 8;
 
     private final MongoDatabase database;
 

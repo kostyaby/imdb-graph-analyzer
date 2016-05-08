@@ -4,8 +4,10 @@ import com.mongodb.DBRef;
 import com.mongodb.client.MongoDatabase;
 import io.github.kostyaby.engine.Engine;
 import io.github.kostyaby.engine.models.Model;
+import org.bson.Document;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
@@ -19,23 +21,39 @@ import java.util.stream.StreamSupport;
 class BenchmarkingClientUtils {
     private static final int TOP_RECORDS_COUNTER = 100;
 
-    private static Stream<DBRef> getTopRecords(MongoDatabase database, String collectionName) {
+    private static Stream<DBRef> getTopRecords(
+            MongoDatabase database, String collectionName, Comparator<Document> comparator) {
         return StreamSupport
                 .stream(database.getCollection(collectionName).find().spliterator(), false)
+                .sorted(comparator)
                 .limit(TOP_RECORDS_COUNTER)
                 .map(document -> new DBRef(collectionName, document.getObjectId("_id")));
     }
 
+    private static List<DBRef> getDBRefs(Document document, String key) {
+        List<DBRef> dbRefs = (List<DBRef>) document.get(key);
+
+        if (dbRefs != null) {
+            return dbRefs;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private static Comparator<Document> getComparatorOnKey(String key) {
+        return (a, b) -> getDBRefs(a, key).size() - getDBRefs(b, key).size();
+    }
+
     private static Stream<DBRef> getActorsForBenchmarking(MongoDatabase database) {
-        return getTopRecords(database, "actors");
+        return getTopRecords(database, "actors", getComparatorOnKey("movies"));
     }
 
     private static Stream<DBRef> getDirectorsForBenchmarking(MongoDatabase database) {
-        return getTopRecords(database, "directors");
+        return getTopRecords(database, "directors", getComparatorOnKey("movies"));
     }
 
     private static Stream<DBRef> getMoviesForBenchmarking(MongoDatabase database) {
-        return getTopRecords(database, "movies");
+        return getTopRecords(database, "movies", getComparatorOnKey("actors"));
     }
 
     static List<DBRef> getOriginsForBenchmarking(MongoDatabase database) {

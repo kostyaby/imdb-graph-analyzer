@@ -10,10 +10,10 @@ import java.util.Objects;
 /**
  * Created by kostya_by on 5/8/16.
  */
-public class CommonReferenceRetriever implements ReferenceRetriever {
+class CommonReferenceRetriever implements ReferenceRetriever {
     private final List<ReferenceRetriever> referenceRetrievers = new ArrayList<>();
 
-    public CommonReferenceRetriever(MongoDatabase database) {
+    CommonReferenceRetriever(MongoDatabase database) {
         Objects.requireNonNull(database);
 
         referenceRetrievers.add(new ActorsReferenceRetriever(database));

@@ -30,12 +30,12 @@ public class Request {
     }
 
     public static class QueryStructure {
-        private final ReferenceRetriever.Type referenceRetrieverType;
+        private final ReferenceRetrieverType referenceRetrieverType;
         private final int maxBranchingFactor;
         private final List<QueryStructure> queryStructures;
 
         private QueryStructure(
-                ReferenceRetriever.Type referenceRetrieverType,
+                ReferenceRetrieverType referenceRetrieverType,
                 int maxBranchingFactor,
                 List<QueryStructure> queryStructures) {
             Objects.requireNonNull(referenceRetrieverType);
@@ -49,13 +49,13 @@ public class Request {
         public static class Builder {
             public final static int DEFAULT_MAX_BRANCHING_FACTOR = -1;
 
-            private ReferenceRetriever.Type referenceRetrieverType;
+            private ReferenceRetrieverType referenceRetrieverType;
             private int maxBranchingFactor = DEFAULT_MAX_BRANCHING_FACTOR;
             private List<QueryStructure> queryStructures = new ArrayList<>();
 
             private Builder() { }
 
-            public Builder setReferenceRetrieverType(ReferenceRetriever.Type referenceRetrieverType) {
+            public Builder setReferenceRetrieverType(ReferenceRetrieverType referenceRetrieverType) {
                 Objects.requireNonNull(referenceRetrieverType);
 
                 this.referenceRetrieverType = referenceRetrieverType;
@@ -83,7 +83,7 @@ public class Request {
             return new Builder();
         }
 
-        public ReferenceRetriever.Type getReferenceRetrieverType() {
+        public ReferenceRetrieverType getReferenceRetrieverType() {
             return referenceRetrieverType;
         }
 

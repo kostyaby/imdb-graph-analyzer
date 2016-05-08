@@ -12,29 +12,29 @@ import static com.mongodb.client.model.Filters.eq;
 /**
  * Created by kostya_by on 4/16/16.
  */
-public class EngineUtils {
-    public static Document fetchDocument(MongoDatabase database, DBRef dbRef) {
+class EngineUtils {
+    static Document fetchDocument(MongoDatabase database, DBRef dbRef) {
         Objects.requireNonNull(database);
         Objects.requireNonNull(dbRef);
 
         return database.getCollection(dbRef.getCollectionName()).find(eq("_id", dbRef.getId())).first();
     }
 
-    public static Document getDocument(Document document, String key) {
+    static Document getDocument(Document document, String key) {
         Objects.requireNonNull(document);
         Objects.requireNonNull(key);
 
         return (Document) document.get(key);
     }
 
-    public static List<String> getListOfStrings(Document document, String key) {
+    static List<String> getStrings(Document document, String key) {
         Objects.requireNonNull(document);
         Objects.requireNonNull(key);
 
         return (List<String>) document.get(key);
     }
 
-    public static List<DBRef> getListOfDBRefs(Document document, String key) {
+    static List<DBRef> getDBRefs(Document document, String key) {
         Objects.requireNonNull(document);
         Objects.requireNonNull(key);
 

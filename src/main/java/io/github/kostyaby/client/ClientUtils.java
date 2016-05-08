@@ -1,7 +1,7 @@
 package io.github.kostyaby.client;
 
 import com.mongodb.DBRef;
-import io.github.kostyaby.engine.ReferenceRetriever;
+import io.github.kostyaby.engine.ReferenceRetrieverType;
 import io.github.kostyaby.engine.Request;
 
 /**
@@ -9,7 +9,7 @@ import io.github.kostyaby.engine.Request;
  */
 class ClientUtils {
     static Request.QueryStructure newQueryStructureWithDepth(
-            ReferenceRetriever.Type referenceRetrieverType, int depth) {
+            ReferenceRetrieverType referenceRetrieverType, int depth) {
         Request.QueryStructure.Builder builder = Request.QueryStructure.newBuilder()
                 .setReferenceRetrieverType(referenceRetrieverType)
                 .setMaxBranchingFactor(Request.Builder.DEFAULT_MAX_BRANCHING_FACTOR * 3);
@@ -25,7 +25,7 @@ class ClientUtils {
         return Request.newBuilder()
                 .setOrigin(origin)
                 .addQueryStructure(
-                        newQueryStructureWithDepth(ReferenceRetriever.Type.COMMON_REFERENCE_RETRIEVER, 5))
+                        newQueryStructureWithDepth(ReferenceRetrieverType.COMMON_REFERENCE_RETRIEVER, 5))
                 .build();
     }
 }

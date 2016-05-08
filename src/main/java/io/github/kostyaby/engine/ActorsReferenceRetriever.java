@@ -10,10 +10,10 @@ import java.util.Objects;
 /**
  * Created by kostya_by on 4/17/16.
  */
-public class ActorsReferenceRetriever implements ReferenceRetriever {
+class ActorsReferenceRetriever implements ReferenceRetriever {
     private final MongoDatabase database;
 
-    public ActorsReferenceRetriever(MongoDatabase database) {
+    ActorsReferenceRetriever(MongoDatabase database) {
         Objects.requireNonNull(database);
 
         this.database = database;
@@ -23,7 +23,7 @@ public class ActorsReferenceRetriever implements ReferenceRetriever {
     public List<DBRef> retrieveReferences(DBRef dbRef, int maxBranchingFactor) {
         Objects.requireNonNull(dbRef);
 
-        List<DBRef> result = EngineUtils.getListOfDBRefs(EngineUtils.fetchDocument(database, dbRef), "actors");
+        List<DBRef> result = EngineUtils.getDBRefs(EngineUtils.fetchDocument(database, dbRef), "actors");
         if (result != null) {
             return result.subList(0, Math.min(maxBranchingFactor, result.size()));
         } else {

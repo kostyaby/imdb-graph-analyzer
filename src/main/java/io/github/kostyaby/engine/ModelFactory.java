@@ -12,8 +12,8 @@ import java.util.Objects;
 /**
  * Created by kostya_by on 4/16/16.
  */
-public class ModelFactory {
-    public static Model newModel(DBRef dbRef, Document document) {
+class ModelFactory {
+    static Model newModel(DBRef dbRef, Document document) {
         Objects.requireNonNull(dbRef);
         Objects.requireNonNull(document);
 
@@ -34,14 +34,14 @@ public class ModelFactory {
                 document.getObjectId("_id"),
                 document.getString("name"),
                 document.getString("gender"),
-                EngineUtils.getListOfDBRefs(document, "movies"));
+                EngineUtils.getDBRefs(document, "movies"));
     }
 
     private static Director newDirector(Document document) {
         return new Director(
                 document.getObjectId("_id"),
                 document.getString("name"),
-                EngineUtils.getListOfDBRefs(document, "movies"));
+                EngineUtils.getDBRefs(document, "movies"));
     }
 
     private static Movie newMovie(Document document) {
@@ -49,11 +49,11 @@ public class ModelFactory {
                 document.getObjectId("_id"),
                 document.getString("title"),
                 document.getInteger("year"),
-                EngineUtils.getListOfStrings(document, "countries"),
-                EngineUtils.getListOfStrings(document, "genres"),
+                EngineUtils.getStrings(document, "countries"),
+                EngineUtils.getStrings(document, "genres"),
                 newMovieRating(EngineUtils.getDocument(document, "rating")),
-                EngineUtils.getListOfStrings(document, "languages"),
-                EngineUtils.getListOfDBRefs(document, "actors"));
+                EngineUtils.getStrings(document, "languages"),
+                EngineUtils.getDBRefs(document, "actors"));
     }
 
     private static Movie.Rating newMovieRating(Document document) {

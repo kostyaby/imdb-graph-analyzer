@@ -7,9 +7,9 @@ import java.util.Objects;
 /**
  * Created by kostya_by on 4/17/16.
  */
-public class ReferenceRetrieverFactory {
-    public static ReferenceRetriever newReferenceRetriever(
-            MongoDatabase database, ReferenceRetriever.Type referenceRetrieverType) {
+class ReferenceRetrieverFactory {
+    static ReferenceRetriever newReferenceRetriever(
+            MongoDatabase database, ReferenceRetrieverType referenceRetrieverType) {
         Objects.requireNonNull(database);
         Objects.requireNonNull(referenceRetrieverType);
 

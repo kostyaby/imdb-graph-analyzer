@@ -18,25 +18,25 @@ import static com.mongodb.client.model.Filters.eq;
  * Created by kostya_by on 4/16/16.
  */
 public class Client {
-    static DBRef getPulpFiction(MongoDatabase database) {
+    private static DBRef getPulpFiction(MongoDatabase database) {
         return new DBRef(
                 "movies",
                 database.getCollection("movies").find(eq("title", "Pulp Fiction (1994)")).first().getObjectId("_id"));
     }
 
-    static DBRef getBradPitt(MongoDatabase database) {
+    private static DBRef getBradPitt(MongoDatabase database) {
         return new DBRef(
                 "actors",
                 database.getCollection("actors").find(eq("name", "Pitt, Brad")).first().getObjectId("_id"));
     }
 
-    static DBRef getQuentinTarantino(MongoDatabase database) {
+    private static DBRef getQuentinTarantino(MongoDatabase database) {
         return new DBRef(
                 "directors",
                 database.getCollection("directors").find(eq("name", "Tarantino, Quentin")).first().getObjectId("_id"));
     }
 
-    static void processRequest(Engine engine, Request request) throws ExecutionException, InterruptedException {
+    private static void processRequest(Engine engine, Request request) throws ExecutionException, InterruptedException {
         System.err.println("Origin: " + request.getOrigin());
         List<Model> response = engine.processRequest(request).get();
 
