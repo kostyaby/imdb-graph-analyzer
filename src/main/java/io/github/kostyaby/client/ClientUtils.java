@@ -1,4 +1,4 @@
-package io.github.kostyaby;
+package io.github.kostyaby.client;
 
 import com.mongodb.DBRef;
 import io.github.kostyaby.engine.ReferenceRetriever;
@@ -7,8 +7,8 @@ import io.github.kostyaby.engine.Request;
 /**
  * Created by kostya_by on 5/8/16.
  */
-public class ClientUtils {
-    public static Request.QueryStructure newQueryStructureWithDepth(
+class ClientUtils {
+    static Request.QueryStructure newQueryStructureWithDepth(
             ReferenceRetriever.Type referenceRetrieverType, int depth) {
         Request.QueryStructure.Builder builder = Request.QueryStructure.newBuilder()
                 .setReferenceRetrieverType(referenceRetrieverType)
@@ -21,7 +21,7 @@ public class ClientUtils {
         return builder.build();
     }
 
-    public static Request newDefaultQuery(DBRef origin) {
+    static Request newDefaultQuery(DBRef origin) {
         return Request.newBuilder()
                 .setOrigin(origin)
                 .addQueryStructure(

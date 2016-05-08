@@ -15,8 +15,7 @@ import java.util.concurrent.ExecutionException;
  * Created by kostya_by on 5/1/16.
  */
 public class MultiThreadedEngineBenchmarkingClient {
-
-    public static void benchmarkMultiThreadedEngine(MongoDatabase database, List<DBRef> origins)
+    private static void benchmarkMultiThreadedEngine(MongoDatabase database, List<DBRef> origins)
             throws IOException, ExecutionException, InterruptedException {
 
         try (Engine engine = new MultiThreadedEngine(database)) {
