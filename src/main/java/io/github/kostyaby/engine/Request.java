@@ -11,37 +11,99 @@ import java.util.Objects;
  */
 public class Request {
     private final DBRef origin;
-    private final List<ReferenceRetriever.Type> referenceRetrieverTypes;
-    private final int maxDistanceFromOrigin;
     private final int maxResponseSize;
     private final int maxBranchingFactor;
+    private final List<QueryStructure> queryStructures;
 
     private Request(
             DBRef origin,
-            List<ReferenceRetriever.Type> referenceRetrieverTypes,
-            int maxDistanceFromOrigin,
             int maxResponseSize,
-            int maxBranchingFactor) {
+            int maxBranchingFactor,
+            List<QueryStructure> queryStructures) {
         Objects.requireNonNull(origin);
-        Objects.requireNonNull(referenceRetrieverTypes);
+        Objects.requireNonNull(queryStructures);
 
         this.origin = origin;
-        this.referenceRetrieverTypes = referenceRetrieverTypes;
-        this.maxDistanceFromOrigin = maxDistanceFromOrigin;
         this.maxResponseSize = maxResponseSize;
         this.maxBranchingFactor = maxBranchingFactor;
+        this.queryStructures = queryStructures;
+    }
+
+    public static class QueryStructure {
+        private final ReferenceRetriever.Type referenceRetrieverType;
+        private final int maxBranchingFactor;
+        private final List<QueryStructure> queryStructures;
+
+        private QueryStructure(
+                ReferenceRetriever.Type referenceRetrieverType,
+                int maxBranchingFactor,
+                List<QueryStructure> queryStructures) {
+            Objects.requireNonNull(referenceRetrieverType);
+            Objects.requireNonNull(queryStructures);
+
+            this.referenceRetrieverType = referenceRetrieverType;
+            this.maxBranchingFactor = maxBranchingFactor;
+            this.queryStructures = queryStructures;
+        }
+
+        public static class Builder {
+            public final static int DEFAULT_MAX_BRANCHING_FACTOR = -1;
+
+            private ReferenceRetriever.Type referenceRetrieverType;
+            private int maxBranchingFactor = DEFAULT_MAX_BRANCHING_FACTOR;
+            private List<QueryStructure> queryStructures = new ArrayList<>();
+
+            private Builder() { }
+
+            public Builder setReferenceRetrieverType(ReferenceRetriever.Type referenceRetrieverType) {
+                Objects.requireNonNull(referenceRetrieverType);
+
+                this.referenceRetrieverType = referenceRetrieverType;
+                return this;
+            }
+
+            public Builder setMaxBranchingFactor(int maxBranchingFactor) {
+                this.maxBranchingFactor = maxBranchingFactor;
+                return this;
+            }
+
+            public Builder addQueryStructure(QueryStructure queryStructure) {
+                Objects.requireNonNull(queryStructure);
+
+                queryStructures.add(queryStructure);
+                return this;
+            }
+
+            public QueryStructure build() {
+                return new QueryStructure(referenceRetrieverType, maxBranchingFactor, queryStructures);
+            }
+        }
+
+        public static Builder newBuilder() {
+            return new Builder();
+        }
+
+        public ReferenceRetriever.Type getReferenceRetrieverType() {
+            return referenceRetrieverType;
+        }
+
+        public int getMaxBranchingFactor() {
+            return maxBranchingFactor;
+        }
+
+        public List<QueryStructure> getQueryStructures() {
+            return queryStructures;
+        }
     }
 
     public static class Builder {
-        private final static int DEFAULT_MAX_DISTANCE_FROM_ORIGIN = 4;
-        private final static int DEFAULT_MAX_RESPONSE_SIZE = 100;
-        private final static int DEFAULT_MAX_BRANCHING_FACTOR = 4;
+        public final static int DEFAULT_MAX_RESPONSE_SIZE = 100;
+        public final static int DEFAULT_MAX_BRANCHING_FACTOR = 5;
 
         private DBRef origin;
-        private List<ReferenceRetriever.Type> referenceRetrieverTypes = new ArrayList<>();
-        private int maxDistanceFromOrigin = DEFAULT_MAX_DISTANCE_FROM_ORIGIN;
         private int maxResponseSize = DEFAULT_MAX_RESPONSE_SIZE;
         private int maxBranchingFactor = DEFAULT_MAX_BRANCHING_FACTOR;
+        private List<QueryStructure> queryStructures = new ArrayList<>();
 
         private Builder() { }
 
@@ -49,12 +111,6 @@ public class Request {
             Objects.requireNonNull(origin);
 
             this.origin = origin;
-            return this;
-        }
-
-        public Builder setMaxDistanceFromOrigin(int maxDistanceFromOrigin) {
-            this.maxDistanceFromOrigin = maxDistanceFromOrigin;
-
             return this;
         }
 
@@ -70,16 +126,16 @@ public class Request {
             return this;
         }
 
-        public Builder addReferenceRetrieverType(ReferenceRetriever.Type referenceRetrieverType) {
-            Objects.requireNonNull(referenceRetrieverType);
+        public Builder addQueryStructure(QueryStructure queryStructure) {
+            Objects.requireNonNull(queryStructure);
 
-            referenceRetrieverTypes.add(referenceRetrieverType);
+            queryStructures.add(queryStructure);
             return this;
         }
 
         public Request build() {
             return new Request(
-                    origin, referenceRetrieverTypes, maxDistanceFromOrigin, maxResponseSize, maxBranchingFactor);
+                    origin, maxResponseSize, maxBranchingFactor, queryStructures);
         }
     }
 
@@ -91,19 +147,15 @@ public class Request {
         return origin;
     }
 
-    public List<ReferenceRetriever.Type> getReferenceRetrieverTypes() {
-        return referenceRetrieverTypes;
-    }
-
-    public int getMaxDistanceFromOrigin() {
-        return maxDistanceFromOrigin;
-    }
-
     public int getMaxResponseSize() {
         return maxResponseSize;
     }
 
     public int getMaxBranchingFactor() {
         return maxBranchingFactor;
+    }
+
+    public List<QueryStructure> getQueryStructures() {
+        return queryStructures;
     }
 }

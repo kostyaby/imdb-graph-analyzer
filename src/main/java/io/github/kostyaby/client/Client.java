@@ -4,8 +4,8 @@ import com.mongodb.DBRef;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
+import io.github.kostyaby.ClientUtils;
 import io.github.kostyaby.engine.Engine;
-import io.github.kostyaby.engine.ReferenceRetriever;
 import io.github.kostyaby.engine.Request;
 import io.github.kostyaby.engine.SingleThreadedEngine;
 import io.github.kostyaby.engine.models.Model;
@@ -19,6 +19,7 @@ import static com.mongodb.client.model.Filters.eq;
  * Created by kostya_by on 4/16/16.
  */
 public class Client {
+
     public static DBRef getPulpFiction(MongoDatabase database) {
         return new DBRef(
                 "movies",
@@ -64,29 +65,9 @@ public class Client {
         try {
             Engine engine = new SingleThreadedEngine(database);
 
-            // Pulp Fiction
-            processRequest(engine, Request.newBuilder()
-                    .setOrigin(getPulpFiction(database))
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.ACTORS_REFERENCE_RETRIEVER)
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.DIRECTORS_REFERENCE_RETRIEVER)
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.MOVIES_REFERENCE_RETRIEVER)
-                    .build());
-
-            // Brad Pitt
-            processRequest(engine, Request.newBuilder()
-                    .setOrigin(getBradPitt(database))
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.ACTORS_REFERENCE_RETRIEVER)
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.DIRECTORS_REFERENCE_RETRIEVER)
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.MOVIES_REFERENCE_RETRIEVER)
-                    .build());
-
-            // Quentin Tarantino
-            processRequest(engine, Request.newBuilder()
-                    .setOrigin(getQuentinTarantino(database))
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.ACTORS_REFERENCE_RETRIEVER)
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.DIRECTORS_REFERENCE_RETRIEVER)
-                    .addReferenceRetrieverType(ReferenceRetriever.Type.MOVIES_REFERENCE_RETRIEVER)
-                    .build());
+            processRequest(engine, ClientUtils.newDefaultQuery(getPulpFiction(database)));
+            processRequest(engine, ClientUtils.newDefaultQuery(getBradPitt(database)));
+            processRequest(engine, ClientUtils.newDefaultQuery(getQuentinTarantino(database)));
         } finally {
             client.close();
         }

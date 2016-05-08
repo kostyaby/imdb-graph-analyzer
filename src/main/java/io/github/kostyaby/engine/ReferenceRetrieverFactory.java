@@ -20,6 +20,8 @@ public class ReferenceRetrieverFactory {
                 return new DirectorsReferenceRetriever(database);
             case MOVIES_REFERENCE_RETRIEVER:
                 return new MoviesReferenceRetriever(database);
+            case COMMON_REFERENCE_RETRIEVER:
+                return new CommonReferenceRetriever(database);
             default:
                 return null;
         }

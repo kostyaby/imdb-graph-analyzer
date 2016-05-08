@@ -3,6 +3,7 @@ package io.github.kostyaby.engine;
 import com.mongodb.DBRef;
 import com.mongodb.client.MongoDatabase;
 import io.github.kostyaby.engine.models.Model;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -25,42 +26,44 @@ public class SingleThreadedEngine implements Engine {
     public synchronized Future<List<Model>> processRequest(Request request) {
         Objects.requireNonNull(request);
 
-        Map<DBRef, Integer> distancesFromOrigin = new HashMap<>();
-        Queue<DBRef> queue = new LinkedList<>();
+        Set<DBRef> visitedNodes = new HashSet<>();
+        Queue<TraversalState> queue = new LinkedList<>();
 
-        DBRef origin = request.getOrigin();
-        List<ReferenceRetriever.Type> referenceRetrieverTypes = request.getReferenceRetrieverTypes();
-        int maxDistanceFromOrigin = request.getMaxDistanceFromOrigin();
-        int maxResponseSize = request.getMaxResponseSize();
-        int maxBranchingFactor = request.getMaxBranchingFactor();
-
-        queue.add(origin);
-        distancesFromOrigin.put(origin, 0);
+        queue.add(new TraversalState(request.getOrigin(), request.getQueryStructures()));
+        visitedNodes.add(request.getOrigin());
 
         while (!queue.isEmpty()) {
-            DBRef node = queue.poll();
-            int distanceFromOrigin = distancesFromOrigin.get(node);
+            TraversalState traversalState = queue.poll();
 
-            if (distanceFromOrigin >= maxDistanceFromOrigin || distancesFromOrigin.size() >= maxResponseSize) {
+            if (visitedNodes.size() >= request.getMaxResponseSize()) {
                 break;
             }
 
-            for (ReferenceRetriever.Type referenceRetrieverType : referenceRetrieverTypes) {
+            DBRef node = traversalState.getNode();
+
+            for (Request.QueryStructure queryStructure : traversalState.getQueryStructures()) {
                 ReferenceRetriever referenceRetriever = ReferenceRetrieverFactory.newReferenceRetriever(
-                        database, referenceRetrieverType);
+                        database, queryStructure.getReferenceRetrieverType());
+
+                int maxBranchingFactor = queryStructure.getMaxBranchingFactor();
+                if (maxBranchingFactor == -1) {
+                    maxBranchingFactor = request.getMaxBranchingFactor();
+                }
+
                 for (DBRef adjacentNode : referenceRetriever.retrieveReferences(node, maxBranchingFactor)) {
-                    if (distancesFromOrigin.size() >= request.getMaxResponseSize()) {
+                    if (visitedNodes.size() >= request.getMaxResponseSize()) {
                         break;
                     }
-                    if (!distancesFromOrigin.containsKey(adjacentNode)) {
-                        distancesFromOrigin.put(adjacentNode, distanceFromOrigin + 1);
-                        queue.add(adjacentNode);
+
+                    if (!visitedNodes.contains(adjacentNode)) {
+                        visitedNodes.add(adjacentNode);
+                        queue.add(new TraversalState(adjacentNode, queryStructure.getQueryStructures()));
                     }
                 }
             }
         }
 
-        return CompletableFuture.completedFuture(distancesFromOrigin.keySet().stream()
+        return CompletableFuture.completedFuture(visitedNodes.stream()
                 .map(dbRef -> ModelFactory.newModel(dbRef, EngineUtils.fetchDocument(database, dbRef)))
                 .collect(Collectors.toList()));
     }
