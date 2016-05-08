@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
-./benchmark_single_threaded_engine
-./benchmark_multi_threaded_engine
-./benchmark_concurrent_single_threaded_engine
-./benchmark_concurrent_multi_threaded_engine
+mongo_uri=mongodb://localhost:27017/imdb
+./benchmark_single_threaded_engine ${1-$mongo_uri}
+./benchmark_multi_threaded_engine ${1-$mongo_uri}
+./benchmark_concurrent_single_threaded_engine ${1-$mongo_uri}
+./benchmark_concurrent_multi_threaded_engine ${1-$mongo_uri}

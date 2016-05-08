@@ -19,14 +19,13 @@ import java.util.stream.StreamSupport;
  * Created by kostya_by on 5/8/16.
  */
 class BenchmarkingClientUtils {
-    private static final int TOP_RECORDS_COUNTER = 50;
+    private static final int TOP_RECORDS_COUNTER = 5;
 
     private static Stream<DBRef> getTopRecords(
             MongoDatabase database, String collectionName, Comparator<Document> comparator) {
         return StreamSupport
-                .stream(database.getCollection(collectionName).find().spliterator(), false)
+                .stream(database.getCollection(collectionName).find().limit(TOP_RECORDS_COUNTER).spliterator(), false)
                 .sorted(comparator)
-                .limit(TOP_RECORDS_COUNTER)
                 .map(document -> new DBRef(collectionName, document.getObjectId("_id")));
     }
 

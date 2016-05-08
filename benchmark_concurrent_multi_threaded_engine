@@ -1,2 +1,3 @@
 #!/usr/bin/env bash
-mvn exec:java -Dexec.mainClass="io.github.kostyaby.client.ConcurrentMultiThreadedBenchmarkingClient" -Dexec.args="mongodb://localhost:27017/imdb"
+mongo_uri=mongodb://localhost:27017/imdb
+mvn exec:java -Dexec.mainClass="io.github.kostyaby.client.ConcurrentMultiThreadedBenchmarkingClient" -Dexec.args="${1-$mongo_uri}"
