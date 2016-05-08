@@ -1,2 +1,2 @@
 #!/usr/bin/env bash
-mvn exec:java -Dexec.mainClass="io.github.kostyaby.client.MultiThreadedEngineBenchmarkingClient" -Dexec.args="mongodb://localhost:27017/imdb"
+mvn exec:java -Dexec.mainClass="io.github.kostyaby.client.MultiThreadedBenchmarkingClient" -Dexec.args="mongodb://localhost:27017/imdb"

@@ -97,8 +97,8 @@ public class Request {
     }
 
     public static class Builder {
-        public final static int DEFAULT_MAX_RESPONSE_SIZE = 100;
-        public final static int DEFAULT_MAX_BRANCHING_FACTOR = 5;
+        public final static int DEFAULT_MAX_RESPONSE_SIZE = 1000;
+        public final static int DEFAULT_MAX_BRANCHING_FACTOR = 10;
 
         private DBRef origin;
         private int maxResponseSize = DEFAULT_MAX_RESPONSE_SIZE;

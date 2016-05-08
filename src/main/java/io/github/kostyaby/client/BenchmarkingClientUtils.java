@@ -19,7 +19,7 @@ import java.util.stream.StreamSupport;
  * Created by kostya_by on 5/8/16.
  */
 class BenchmarkingClientUtils {
-    private static final int TOP_RECORDS_COUNTER = 100;
+    private static final int TOP_RECORDS_COUNTER = 50;
 
     private static Stream<DBRef> getTopRecords(
             MongoDatabase database, String collectionName, Comparator<Document> comparator) {
@@ -41,7 +41,13 @@ class BenchmarkingClientUtils {
     }
 
     private static Comparator<Document> getComparatorOnKey(String key) {
-        return (a, b) -> getDBRefs(a, key).size() - getDBRefs(b, key).size();
+        return (a, b) -> {
+            if (getDBRefs(a, key).size() != getDBRefs(b, key).size()) {
+                return getDBRefs(b, key).size() - getDBRefs(a, key).size();
+            }
+
+            return a.getObjectId("_id").compareTo(b.getObjectId("_id"));
+        };
     }
 
     private static Stream<DBRef> getActorsForBenchmarking(MongoDatabase database) {
@@ -72,9 +78,12 @@ class BenchmarkingClientUtils {
             modelListFutures.add(engine.processRequest(ClientUtils.newDefaultQuery(origin)));
         }
 
+        int totalSize = 0;
         for (Future<List<Model>> modelListFuture : modelListFutures) {
-            modelListFuture.get();
+            totalSize += modelListFuture.get().size();
         }
+
+        System.err.println("Total size: " + totalSize);
 
         return System.currentTimeMillis() - processingRequestsStart;
     }

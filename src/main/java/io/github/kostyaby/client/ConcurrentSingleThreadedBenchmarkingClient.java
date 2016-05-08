@@ -4,21 +4,28 @@ import com.mongodb.DBRef;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
-import io.github.kostyaby.engine.*;
+import io.github.kostyaby.engine.Engine;
+import io.github.kostyaby.engine.ConcurrentRequestProcessingEngineWrapper;
+import io.github.kostyaby.engine.EngineFactories;
+import io.github.kostyaby.engine.EngineFactory;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ForkJoinPool;
 
 /**
  * Created by kostya_by on 5/1/16.
  */
-public class SingleThreadedEngineBenchmarkingClient {
-    private static void benchmarkSingleThreadedEngine(MongoDatabase database, List<DBRef> origins)
+public class ConcurrentSingleThreadedBenchmarkingClient {
+    private static void benchmarkMultiThreadedEngine(
+            MongoDatabase database, ExecutorService executorService, List<DBRef> origins)
             throws IOException, ExecutionException, InterruptedException {
 
-        try (Engine engine = new SingleThreadedEngine(database)) {
-            System.err.println("Processing requests in a single thread: "
+        EngineFactory engineFactory = new EngineFactories.SingleThreadedEngineFactory(database);
+        try (Engine engine = new ConcurrentRequestProcessingEngineWrapper(executorService, engineFactory)) {
+            System.err.println("Processing requests in a single thread concurrently: "
                     + BenchmarkingClientUtils.benchmarkEngine(engine, origins) + "ms");
         }
     }
@@ -34,9 +41,10 @@ public class SingleThreadedEngineBenchmarkingClient {
 
         try (MongoClient client = new MongoClient(clientUri)) {
             MongoDatabase database = client.getDatabase(clientUri.getDatabase());
+            ForkJoinPool executorService = new ForkJoinPool();
             List<DBRef> origins = BenchmarkingClientUtils.getOriginsForBenchmarking(database);
 
-            benchmarkSingleThreadedEngine(database, origins);
+            benchmarkMultiThreadedEngine(database, executorService, origins);
         }
     }
 }

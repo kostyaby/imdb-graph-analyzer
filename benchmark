@@ -1,3 +1,5 @@
 #!/usr/bin/env bash
 ./benchmark_single_threaded_engine
 ./benchmark_multi_threaded_engine
+./benchmark_concurrent_single_threaded_engine
+./benchmark_concurrent_multi_threaded_engine

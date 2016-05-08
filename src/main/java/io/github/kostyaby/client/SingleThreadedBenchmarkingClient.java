@@ -4,8 +4,7 @@ import com.mongodb.DBRef;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoDatabase;
-import io.github.kostyaby.engine.Engine;
-import io.github.kostyaby.engine.MultiThreadedEngine;
+import io.github.kostyaby.engine.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -14,12 +13,12 @@ import java.util.concurrent.ExecutionException;
 /**
  * Created by kostya_by on 5/1/16.
  */
-public class MultiThreadedEngineBenchmarkingClient {
-    private static void benchmarkMultiThreadedEngine(MongoDatabase database, List<DBRef> origins)
+public class SingleThreadedBenchmarkingClient {
+    private static void benchmarkSingleThreadedEngine(MongoDatabase database, List<DBRef> origins)
             throws IOException, ExecutionException, InterruptedException {
 
-        try (Engine engine = new MultiThreadedEngine(database)) {
-            System.err.println("Processing requests in multiple threads: "
+        try (Engine engine = new SingleThreadedEngine(database)) {
+            System.err.println("Processing requests in a single thread: "
                     + BenchmarkingClientUtils.benchmarkEngine(engine, origins) + "ms");
         }
     }
@@ -37,7 +36,7 @@ public class MultiThreadedEngineBenchmarkingClient {
             MongoDatabase database = client.getDatabase(clientUri.getDatabase());
             List<DBRef> origins = BenchmarkingClientUtils.getOriginsForBenchmarking(database);
 
-            benchmarkMultiThreadedEngine(database, origins);
+            benchmarkSingleThreadedEngine(database, origins);
         }
     }
 }

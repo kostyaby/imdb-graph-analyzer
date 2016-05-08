@@ -2,6 +2,7 @@ package io.github.kostyaby.engine;
 
 import com.mongodb.DBRef;
 import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,7 +24,14 @@ class DirectorsReferenceRetriever implements ReferenceRetriever {
     public List<DBRef> retrieveReferences(DBRef dbRef, int maxBranchingFactor) {
         Objects.requireNonNull(dbRef);
 
-        List<DBRef> result = EngineUtils.getDBRefs(EngineUtils.fetchDocument(database, dbRef), "directors");
+        return retrieveReferences(EngineUtils.fetchDocument(database, dbRef), maxBranchingFactor);
+    }
+
+    @Override
+    public List<DBRef> retrieveReferences(Document document, int maxBranchingFactor) {
+        Objects.requireNonNull(document);
+
+        List<DBRef> result = EngineUtils.getDBRefs(document, "directors");
         if (result != null) {
             return result.subList(0, Math.min(maxBranchingFactor, result.size()));
         } else {
